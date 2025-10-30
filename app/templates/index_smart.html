@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryboardAI - Generative Storyboarding for Filmmakers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff6b35;
+            --primary-dark: #e55a2b;
+            --primary-light: #ff8c5a;
+            --secondary: #ffa726;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f5f5f5;
+            --gray: #424242;
+            --gray-light: #757575;
+            --success: #4caf50;
+            --danger: #f44336;
+            
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+            --glow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: var(--glow);
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--gray-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg), var(--glow);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(90deg, var(--light), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray-light);
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-demo {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .demo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .demo-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 107, 53, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            transition: all 0.3s;
+        }
+
+        .demo-item:hover .demo-icon {
+            transform: scale(1.1);
+            box-shadow: var(--glow);
+            background: rgba(255, 107, 53, 0.2);
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .section-title p {
+            color: var(--gray-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features {
+            padding: 4rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 107, 53, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .feature-card p {
+            color: var(--gray-light);
+        }
+
+        /* Storyboard Creator */
+        .creator {
+            padding: 4rem 0;
+            background: rgba(20, 20, 20, 0.7);
+            border-radius: 20px;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 107, 53, 0.1);
+        }
+
+        .creator-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--gray-light);
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab.active {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--primary);
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .tab.active::after {
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(10, 10, 10, 0.7);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .preview-area {
+            background: rgba(10, 10, 10, 0.7);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+            border: 2px dashed rgba(255, 107, 53, 0.3);
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .preview-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Storyboard Grid */
+        .storyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .storyboard-card {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255, 107, 53, 0.1);
+        }
+
+        .storyboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .storyboard-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+        }
+
+        .storyboard-content {
+            padding: 1.5rem;
+        }
+
+        .storyboard-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+
+        .storyboard-desc {
+            color: var(--gray-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .storyboard-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
+            margin-top: 4rem;
+            background: rgba(10, 10, 10, 0.8);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--light);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 107, 53, 0.1);
+            color: var(--gray);
+        }
+
+        /* Orange Accents */
+        .orange-accent {
+            color: var(--primary);
+        }
+
+        .orange-bg {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .orange-border {
+            border-color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-demo {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="logo-text">StoryboardAI</div>
+                </div>
+                <nav class="nav-links">
+                    <a href="#" class="nav-link">Features</a>
+                    <a href="#" class="nav-link">Examples</a>
+                    <a href="#" class="nav-link">Pricing</a>
+                    <a href="#" class="nav-link">Blog</a>
+                </nav>
+                <div>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                    <button class="btn">
+                        <i class="fas fa-rocket"></i> Get Started
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Transform Your Script into Visual Stories with AI</h1>
+            <p>Generate professional storyboards in minutes, not days. Our generative AI understands cinematic language and visual storytelling.</p>
+            <div class="hero-buttons">
+                <button class="btn" style="padding: 1rem 2rem;">
+                    <i class="fas fa-magic"></i> Try Storyboard Generator
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-play-circle"></i> Watch Demo
+                </button>
+            </div>
+            <div class="hero-demo">
+                <div class="demo-item">
+                    <div class="demo-icon">
+                        <i class="fas fa-scroll"></i>
+                    </div>
+                    <span>Script to Visuals</span>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <span>Multiple Styles</span>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <span>Export to Tools</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="section-title">
+                <h2>Powerful Features for Filmmakers</h2>
+                <p>Everything you need to visualize your story before production begins</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered Generation</h3>
+                    <p>Our advanced AI understands cinematic terminology, shot types, and visual storytelling principles to create accurate storyboards.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-theater-masks"></i>
+                    </div>
+                    <h3>Character Consistency</h3>
+                    <p>Maintain consistent character appearances across all storyboard frames with our character reference system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>Shot Variety</h3>
+                    <p>Generate wide shots, close-ups, medium shots, and specialty shots like Dutch angles or dolly movements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h3>Lighting & Mood Control</h3>
+                    <p>Specify lighting conditions and mood to match your scene's emotional tone and time of day.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3>Style Transfer</h3>
+                    <p>Apply different visual styles to your storyboards - from realistic to anime, sketch to painterly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <h3>Export to Production Tools</h3>
+                    <p>Seamlessly export to Final Draft, Adobe Premiere, Storyboarder, and other production software.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Storyboard Creator -->
+        <section class="creator">
+            <div class="section-title">
+                <h2>Create Your Storyboard</h2>
+                <p>Transform your script into a visual story in minutes</p>
+            </div>
+
+            <div class="creator-tabs">
+                <button class="tab active" data-tab="script">From Script</button>
+                <button class="tab" data-tab="description">From Description</button>
+                <button class="tab" data-tab="upload">Upload Script</button>
+            </div>
+
+            <div class="tab-content active" id="script-tab">
+                <div class="form-group">
+                    <label class="form-label">Scene Description</label>
+                    <textarea class="form-control" placeholder="Describe your scene in detail. Include characters, actions, setting, and mood..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Visual Style</label>
+                        <select class="form-control">
+                            <option>Realistic</option>
+                            <option>Sketch/Storyboard</option>
+                            <option>Anime</option>
+                            <option>Painterly</option>
+                            <option>Film Noir</option>
+                            <option>Cinematic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Shot Type</label>
+                        <select class="form-control">
+                            <option>Automatic (AI Suggested)</option>
+                            <option>Wide Shot</option>
+                            <option>Medium Shot</option>
+                            <option>Close-Up</option>
+                            <option>Extreme Close-Up</option>
+                            <option>Dutch Angle</option>
+                            <option>Over-the-Shoulder</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Lighting</label>
+                        <select class="form-control">
+                            <option>Natural Daylight</option>
+                            <option>Golden Hour</option>
+                            <option>Blue Hour</option>
+                            <option>Night</option>
+                            <option>Studio Lighting</option>
+                            <option>Dramatic/Chiaroscuro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of Panels</label>
+                        <select class="form-control">
+                            <option>4 panels</option>
+                            <option>6 panels</option>
+                            <option>8 panels</option>
+                            <option>12 panels</option>
+                            <option>16 panels</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" style="width: 100%; padding: 1rem;">
+                    <i class="fas fa-wand-magic-sparkles"></i> Generate Storyboard
+                </button>
+                
+                <div class="preview-area">
+                    <div class="preview-placeholder">
+                        <i class="fas fa-images"></i>
+                        <p>Your generated storyboard will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="description-tab">
+                <!-- Similar form for description-based input -->
+                <p>Describe your scene visually and let AI create the storyboard.</p>
+            </div>
+
+            <div class="tab-content" id="upload-tab">
+                <!-- Upload form for script files -->
+                <p>Upload your script file and we'll automatically extract scenes for storyboarding.</p>
+            </div>
+        </section>
+
+        <!-- Example Storyboards -->
+        <section class="features">
+            <div class="section-title">
+                <h2>Example Storyboards</h2>
+                <p>See how filmmakers are using AI to visualize their stories</p>
+            </div>
+            <div class="storyboard-grid">
+                <div class="storyboard-card">
+                    <div class="storyboard-image">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="storyboard-content">
+                        <div class="storyboard-title">Sci-Fi Chase Scene</div>
+                        <div class="storyboard-desc">Futuristic city chase with hover vehicles and neon lighting</div>
+                        <div class="storyboard-meta">
+                            <span>8 panels</span>
+                            <span>Cinematic style</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="storyboard-card">
+                    <div class="storyboard-image">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="storyboard-content">
+                        <div class="storyboard-title">Romantic Dinner</div>
+                        <div class="storyboard-desc">Intimate conversation scene with soft lighting and close-ups</div>
+                        <div class="storyboard-meta">
+                            <span>6 panels</span>
+                            <span>Realistic style</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="storyboard-card">
+                    <div class="storyboard-image">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="storyboard-content">
+                        <div class="storyboard-title">Horror Basement</div>
+                        <div class="storyboard-desc">Tense exploration scene with dramatic shadows and reveals</div>
+                        <div class="storyboard-meta">
+                            <span>10 panels</span>
+                            <span>Noir style</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="storyboard-card">
+                    <div class="storyboard-image">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="storyboard-content">
+                        <div class="storyboard-title">Action Fight Sequence</div>
+                        <div class="storyboard-desc">Dynamic martial arts fight with multiple camera angles</div>
+                        <div class="storyboard-meta">
+                            <span>12 panels</span>
+                            <span>Sketch style</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>StoryboardAI</h3>
+                    <p>Transforming scriptwriting and pre-production with generative AI technology.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Product</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Examples</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 StoryboardAI. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+
+        // Example of dynamic content update
+        document.querySelector('textarea').addEventListener('input', function() {
+            const charCount = this.value.length;
+            const hint = document.getElementById('promptHint');
+            if (hint) {
+                if (charCount < 50) {
+                    hint.textContent = "Add more details for better results";
+                } else if (charCount < 150) {
+                    hint.textContent = "Good description! Consider adding character emotions";
+                } else {
+                    hint.textContent = "Excellent detail! Ready to generate";
+                }
+            }
+        });
+
+        // Generate button animation
+        document.querySelector('.btn[style*="width: 100%"]').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Storyboard...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate Storyboard';
+                alert('Storyboard generation complete! Check the preview area.');
+            }, 3000);
+        });
+
+        // Add orange accent to feature cards on hover
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.borderColor = 'rgba(255, 107, 53, 0.5)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.borderColor = 'rgba(255, 107, 53, 0.1)';
+            });
+        });
+    </script>
+</body>
+</html>

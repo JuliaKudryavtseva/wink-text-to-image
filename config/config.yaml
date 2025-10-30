@@ -1,0 +1,24 @@
+model:
+  name: "runwayml/stable-diffusion-v1-5"
+  # Альтернативные модели:
+  # - "stabilityai/stable-diffusion-2-1"
+  # - "stabilityai/stable-diffusion-xl-base-1.0"
+  # - "runwayml/stable-diffusion-inpainting"
+  
+  device: "cuda"  # или "cpu"
+  dtype: "fp16"   # или "fp32"
+  
+generation:
+  num_inference_steps: 20
+  guidance_scale: 7.5
+  width: 512
+  height: 512
+  
+server:
+  host: "0.0.0.0"
+  port: 5000
+  debug: false
+  
+storage:
+  output_dir: "/app/outputs"
+  max_files: 1000
